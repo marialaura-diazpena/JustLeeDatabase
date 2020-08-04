@@ -1,0 +1,159 @@
+SQL> 
+SQL> --Question 1:
+SQL> select firstname, lastname
+  2  from customers
+  3  where firstname not like '%LEILA%' and lastname != '%SMITH%' and state =
+  4  (select state
+  5  from customers
+  6  where firstname like '%LEILA%');
+
+FIRSTNAME  LASTNAME                                                                                                                 
+---------- ----------                                                                                                               
+BONITA     MORALES                                                                                                                  
+NICHOLAS   NGUYEN                                                                                                                   
+STEVE      SCHELL                                                                                                                   
+
+3 rows selected.
+
+SQL> 
+SQL> --Question 2:
+SQL> select lastname, max(title), retail, avg(distinct retail)over () AS "Avg"
+  2  from customers c, books b, orders o
+  3  where retail > (select avg(retail) from books)
+  4  and o.customer#=c.customer#
+  5  having count(title) = 1 and count(lastname)=1
+  6  group by lastname, retail
+  7  order by lastname;
+
+LASTNAME   MAX(TITLE)                         RETAIL        Avg                                                                     
+---------- ------------------------------ ---------- ----------                                                                     
+JONES      BUILDING A CAR WITH TOOTHPICKS      59.95      67.26                                                                     
+JONES      PAINLESS CHILD-REARING              89.95      67.26                                                                     
+JONES      DATABASE IMPLEMENTATION             55.95      67.26                                                                     
+JONES      HOLY GRAIL OF ORACLE                75.95      67.26                                                                     
+JONES      E-BUSINESS THE EASY WAY              54.5      67.26                                                                     
+LEE        HOLY GRAIL OF ORACLE                75.95      67.26                                                                     
+LEE        DATABASE IMPLEMENTATION             55.95      67.26                                                                     
+LEE        PAINLESS CHILD-REARING              89.95      67.26                                                                     
+LEE        E-BUSINESS THE EASY WAY              54.5      67.26                                                                     
+LEE        BUILDING A CAR WITH TOOTHPICKS      59.95      67.26                                                                     
+MCGOVERN   DATABASE IMPLEMENTATION             55.95      67.26                                                                     
+MCGOVERN   E-BUSINESS THE EASY WAY              54.5      67.26                                                                     
+MCGOVERN   BUILDING A CAR WITH TOOTHPICKS      59.95      67.26                                                                     
+MCGOVERN   PAINLESS CHILD-REARING              89.95      67.26                                                                     
+MCGOVERN   HOLY GRAIL OF ORACLE                75.95      67.26                                                                     
+NELSON     BUILDING A CAR WITH TOOTHPICKS      59.95      67.26                                                                     
+NELSON     E-BUSINESS THE EASY WAY              54.5      67.26                                                                     
+NELSON     HOLY GRAIL OF ORACLE                75.95      67.26                                                                     
+NELSON     DATABASE IMPLEMENTATION             55.95      67.26                                                                     
+NELSON     PAINLESS CHILD-REARING              89.95      67.26                                                                     
+PIERSON    BUILDING A CAR WITH TOOTHPICKS      59.95      67.26                                                                     
+PIERSON    DATABASE IMPLEMENTATION             55.95      67.26                                                                     
+PIERSON    PAINLESS CHILD-REARING              89.95      67.26                                                                     
+PIERSON    E-BUSINESS THE EASY WAY              54.5      67.26                                                                     
+PIERSON    HOLY GRAIL OF ORACLE                75.95      67.26                                                                     
+SCHELL     PAINLESS CHILD-REARING              89.95      67.26                                                                     
+SCHELL     HOLY GRAIL OF ORACLE                75.95      67.26                                                                     
+SCHELL     DATABASE IMPLEMENTATION             55.95      67.26                                                                     
+SCHELL     BUILDING A CAR WITH TOOTHPICKS      59.95      67.26                                                                     
+SCHELL     E-BUSINESS THE EASY WAY              54.5      67.26                                                                     
+
+30 rows selected.
+
+SQL> 
+SQL> --Question 4:
+SQL> --4.a:
+SQL> select fname ||' '|| lname as Author, max(title) as "Last Book", MAX(pubdate) as "Date Pub"
+  2  from author a, books b, bookauthor ba
+  3  where ba.authorid=a.authorid and b.isbn=ba.isbn
+  4  group by fname, lname
+  5  order by lname, fname;
+
+AUTHOR                Last Book                      Date Pub                                                                       
+--------------------- ------------------------------ ---------                                                                      
+JUAN ADAMS            DATABASE IMPLEMENTATION        04-JUN-03                                                                      
+JAMES AUSTIN          HOLY GRAIL OF ORACLE           31-DEC-05                                                                      
+JACK BAKER            PAINLESS CHILD-REARING         17-JUL-04                                                                      
+OSCAR FIELDS          PAINLESS CHILD-REARING         17-JUL-04                                                                      
+JANICE JONES          REVENGE OF MICKEY              01-MAR-06                                                                      
+TAMARA KZOCHSKY       BUILDING A CAR WITH TOOTHPICKS 18-MAR-06                                                                      
+TINA PETERSON         DATABASE IMPLEMENTATION        04-JUN-03                                                                      
+LISA PORTER           BODYBUILD IN 10 MINUTES A DAY  21-JAN-05                                                                      
+ROBERT ROBINSON       PAINLESS CHILD-REARING         08-NOV-05                                                                      
+SAM SMITH             THE WOK WAY TO COOK            11-NOV-06                                                                      
+LISA WHITE            SHORTEST POEMS                 01-MAY-05                                                                      
+WILLIAM WHITE         HOW TO MANAGE THE MANAGER      21-JAN-05                                                                      
+
+12 rows selected.
+
+SQL> 
+SQL> --4.b:
+SQL> select fname ||' '|| lname as Author, max(title) as "Last Book", MAX(pubdate) as "Date Pub"
+  2  from author a join bookauthor ba using (authorid) join books using (isbn)
+  3  group by fname, lname
+  4  order by fname, lname;
+
+AUTHOR                Last Book                      Date Pub                                                                       
+--------------------- ------------------------------ ---------                                                                      
+JACK BAKER            PAINLESS CHILD-REARING         17-JUL-04                                                                      
+JAMES AUSTIN          HOLY GRAIL OF ORACLE           31-DEC-05                                                                      
+JANICE JONES          REVENGE OF MICKEY              01-MAR-06                                                                      
+JUAN ADAMS            DATABASE IMPLEMENTATION        04-JUN-03                                                                      
+LISA PORTER           BODYBUILD IN 10 MINUTES A DAY  21-JAN-05                                                                      
+LISA WHITE            SHORTEST POEMS                 01-MAY-05                                                                      
+OSCAR FIELDS          PAINLESS CHILD-REARING         17-JUL-04                                                                      
+ROBERT ROBINSON       PAINLESS CHILD-REARING         08-NOV-05                                                                      
+SAM SMITH             THE WOK WAY TO COOK            11-NOV-06                                                                      
+TAMARA KZOCHSKY       BUILDING A CAR WITH TOOTHPICKS 18-MAR-06                                                                      
+TINA PETERSON         DATABASE IMPLEMENTATION        04-JUN-03                                                                      
+WILLIAM WHITE         HOW TO MANAGE THE MANAGER      21-JAN-05                                                                      
+
+12 rows selected.
+
+SQL> 
+SQL> --Question 5:
+SQL> select firstname, lastname, count(order#)
+  2  from customers c, orders o
+  3  where c.customer#=o.customer#
+  4  group by firstname, lastname
+  5  order by count(order#) desc, lastname asc
+  6  offset 10 rows fetch next 4 rows only;
+
+FIRSTNAME  LASTNAME   COUNT(ORDER#)                                                                                                 
+---------- ---------- -------------                                                                                                 
+BECCA      NELSON                 1                                                                                                 
+THOMAS     PIERSON                1                                                                                                 
+STEVE      SCHELL                 1                                                                                                 
+JENNIFER   SMITH                  1                                                                                                 
+
+4 rows selected.
+
+SQL> 
+SQL> --Question 6:
+SQL> select c.customer#, max(o.order#) as "Order#", sum(quantity*paideach)as"Value of Largest Order"
+  2  from customers c, orderitems oi, orders o
+  3  where c.customer#=o.customer# and o.order#=oi.order#
+  4  group by c.customer#
+  5  order by 1, 2;
+
+ CUSTOMER#     Order# Value of Largest Order                                                                                        
+---------- ---------- ----------------------                                                                                        
+      1001       1018                 182.75                                                                                        
+      1003       1016                 139.95                                                                                        
+      1004       1008                   39.9                                                                                        
+      1005       1009                   61.9                                                                                        
+      1007       1014                 379.85                                                                                        
+      1008       1020                  19.95                                                                                        
+      1010       1011                 202.85                                                                                        
+      1011       1002                  111.9                                                                                        
+      1014       1013                  55.95                                                                                        
+      1015       1017                   17.9                                                                                        
+      1017       1012                  166.4                                                                                        
+      1018       1019                  61.95                                                                                        
+      1019       1010                  55.95                                                                                        
+      1020       1015                 190.85                                                                                        
+
+14 rows selected.
+
+SQL> 
+SQL> spool off

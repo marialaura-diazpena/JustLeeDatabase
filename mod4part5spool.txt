@@ -1,0 +1,133 @@
+SQL> 
+SQL> --Question 2
+SQL> SELECT initcap(firstname) as "first", initcap(lastname) as "last", oi.order#, sum(quantity*paideach)"Order Ttl"
+  2  from customers c, orderitems oi, orders o
+  3  where c.customer#=o.customer# and oi.order#=o.order#
+  4  group by firstname, lastname, oi.order#
+  5  order by lastname, firstname, 4;
+
+first      last           ORDER#  Order Ttl                                                                                         
+---------- ---------- ---------- ----------                                                                                         
+Kenneth    Falah            1015      19.95                                                                                         
+Kenneth    Falah            1004      170.9                                                                                         
+Tammy      Giana            1014         44                                                                                         
+Tammy      Giana            1007     335.85                                                                                         
+Cindy      Girard           1000      19.95                                                                                         
+Cindy      Girard           1009      41.95                                                                                         
+Kenneth    Jones            1020      19.95                                                                                         
+Jasmine    Lee              1013      55.95                                                                                         
+Jake       Lucas            1011      85.45                                                                                         
+Jake       Lucas            1001      117.4                                                                                         
+Reese      Mcgovern         1002      111.9                                                                                         
+Greg       Montiasa         1019         22                                                                                         
+Greg       Montiasa         1005      39.95                                                                                         
+Bonita     Morales          1018       75.9                                                                                         
+Bonita     Morales          1003     106.85                                                                                         
+Becca      Nelson           1012      166.4                                                                                         
+Thomas     Pierson          1008       39.9                                                                                         
+Steve      Schell           1017       17.9                                                                                         
+Jennifer   Smith            1010      55.95                                                                                         
+Leila      Smith            1006       54.5                                                                                         
+Leila      Smith            1016      85.45                                                                                         
+
+21 rows selected.
+
+SQL> 
+SQL> 
+SQL> --Question 3
+SQL> select round(avg(count(a.authorid)), 2) "Average"
+  2  from author a, bookauthor b
+  3  where a.authorid=b.authorid
+  4  group by a.authorid;
+
+   Average                                                                                                                          
+----------                                                                                                                          
+      1.67                                                                                                                          
+
+1 row selected.
+
+SQL> 
+SQL> --Question 4
+SQL> select distinct Category, count(*) AS "Num of Books", TO_CHAR(AVG(retail), '$9999.00')
+  2  from books
+  3  group by category
+  4  having COUNT(category) > 1
+  5  order by category;
+
+CATEGORY     Num of Books TO_CHAR(A                                                                                                 
+------------ ------------ ---------                                                                                                 
+CHILDREN                2    $34.45                                                                                                 
+COMPUTER                4    $52.85                                                                                                 
+COOKING                 2    $24.35                                                                                                 
+FAMILY LIFE             2    $55.98                                                                                                 
+
+4 rows selected.
+
+SQL> 
+SQL> --Question 5
+SQL> select fname, lname, sum(quantity)
+  2  from author a, bookauthor b, orderitems oi, orders o
+  3  where a.authorid=b.authorid and oi.order#=o.order# and oi.isbn=b.isbn
+  4  group by fname, lname
+  5  having sum(quantity) >9
+  6  order by lname;
+
+FNAME      LNAME      SUM(QUANTITY)                                                                                                 
+---------- ---------- -------------                                                                                                 
+JAMES      AUSTIN                10                                                                                                 
+JACK       BAKER                 14                                                                                                 
+ROBERT     ROBINSON              10                                                                                                 
+
+3 rows selected.
+
+SQL> 
+SQL> --Question 6
+SQL> SELECT initcap(firstname) as "FIRST", initcap(lastname) as "LAST", oi.order#, sum(quantity*paideach)"Value"
+  2  from customers c, orderitems oi, orders o
+  3  where c.customer#=o.customer# and oi.order#=o.order#
+  4  group by rollup((firstname, lastname), oi.order#)
+  5  order by lastname, firstname, oi.order#;
+
+FIRST      LAST           ORDER#      Value                                                                                         
+---------- ---------- ---------- ----------                                                                                         
+Kenneth    Falah            1004      170.9                                                                                         
+Kenneth    Falah            1015      19.95                                                                                         
+Kenneth    Falah                     190.85                                                                                         
+Tammy      Giana            1007     335.85                                                                                         
+Tammy      Giana            1014         44                                                                                         
+Tammy      Giana                     379.85                                                                                         
+Cindy      Girard           1000      19.95                                                                                         
+Cindy      Girard           1009      41.95                                                                                         
+Cindy      Girard                      61.9                                                                                         
+Kenneth    Jones            1020      19.95                                                                                         
+Kenneth    Jones                      19.95                                                                                         
+Jasmine    Lee              1013      55.95                                                                                         
+Jasmine    Lee                        55.95                                                                                         
+Jake       Lucas            1001      117.4                                                                                         
+Jake       Lucas            1011      85.45                                                                                         
+Jake       Lucas                     202.85                                                                                         
+Reese      Mcgovern         1002      111.9                                                                                         
+Reese      Mcgovern                   111.9                                                                                         
+Greg       Montiasa         1005      39.95                                                                                         
+Greg       Montiasa         1019         22                                                                                         
+Greg       Montiasa                   61.95                                                                                         
+Bonita     Morales          1003     106.85                                                                                         
+Bonita     Morales          1018       75.9                                                                                         
+Bonita     Morales                   182.75                                                                                         
+Becca      Nelson           1012      166.4                                                                                         
+Becca      Nelson                     166.4                                                                                         
+Thomas     Pierson          1008       39.9                                                                                         
+Thomas     Pierson                     39.9                                                                                         
+Steve      Schell           1017       17.9                                                                                         
+Steve      Schell                      17.9                                                                                         
+Jennifer   Smith            1010      55.95                                                                                         
+Jennifer   Smith                      55.95                                                                                         
+Leila      Smith            1006       54.5                                                                                         
+Leila      Smith            1016      85.45                                                                                         
+Leila      Smith                     139.95                                                                                         
+                                    1688.05                                                                                         
+
+36 rows selected.
+
+SQL> 
+SQL> spool off

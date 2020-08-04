@@ -1,0 +1,130 @@
+SQL> 
+SQL> --Question 1:
+SQL> set linesize 75
+SQL> set pagesize 50
+SQL> TTITLE CENTER "Customer/Title Information" SKIP CENTER "Customer Order Evaluation" SKIP 2
+SQL> BTITLE SKIP 5 CENTER'Internal Use Only'
+SQL> column title format heading 'Book |Title'
+SP2-0246: Illegal FORMAT string "heading"
+SQL> column lastname format A10 heading 'Last|Name'
+SQL> column firstname format A10 heading 'First|Name'
+SQL> column cost format $999.99 heading 'Book|Cost'
+SQL> break on title
+SQL> select title, lastname, firstname, cost
+  2  from  books b, customers c, orders o, orderitems oi
+  3  where b.isbn=oi.isbn and c.customer#=o.customer# and o.order#=oi.order#
+  4  order by title, lastname;
+
+                         Customer/Title Information                        
+                         Customer Order Evaluation                         
+                                                                           
+                               Last       First          Book              
+TITLE                          Name       Name           Cost              
+------------------------------ ---------- ---------- --------              
+BIG BEAR AND LITTLE DOVE       GIANA      TAMMY         $5.32              
+                               NELSON     BECCA         $5.32              
+                               SCHELL     STEVE         $5.32              
+BODYBUILD IN 10 MINUTES A DAY  MORALES    BONITA       $18.75              
+COOKING WITH MUSHROOMS         FALAH      KENNETH      $12.50              
+                               GIRARD     CINDY        $12.50              
+                               GIRARD     CINDY        $12.50              
+                               JONES      KENNETH      $12.50              
+                               MORALES    BONITA       $12.50              
+                               MORALES    BONITA       $12.50              
+                               PIERSON    THOMAS       $12.50              
+DATABASE IMPLEMENTATION        GIANA      TAMMY        $31.40              
+                               LEE        JASMINE      $31.40              
+                               MCGOVERN   REESE        $31.40              
+                               MORALES    BONITA       $31.40              
+                               MORALES    BONITA       $31.40              
+                               SMITH      JENNIFER     $31.40              
+E-BUSINESS THE EASY WAY        GIANA      TAMMY        $37.90              
+                               SMITH      LEILA        $37.90              
+HANDCRANKED COMPUTERS          NELSON     BECCA        $21.80              
+HOLY GRAIL OF ORACLE           GIANA      TAMMY        $47.25              
+HOW TO MANAGE THE MANAGER      LUCAS      JAKE         $15.40              
+PAINLESS CHILD-REARING         FALAH      KENNETH      $48.00              
+                               LUCAS      JAKE         $48.00              
+                               LUCAS      JAKE         $48.00              
+                               NELSON     BECCA        $48.00              
+                               SMITH      LEILA        $48.00              
+REVENGE OF MICKEY              GIANA      TAMMY        $14.20              
+                               GIRARD     CINDY        $14.20              
+                               MONTIASA   GREG         $14.20              
+                               NELSON     BECCA        $14.20              
+SHORTEST POEMS                 MONTIASA   GREG         $21.85              
+
+
+
+
+
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+                             Internal Use Only                             
+
+32 rows selected.
+
+SQL> 
+SQL> --Question 2:
+SQL> set pagesize 35
+SQL> SET RECSEP WRAPPED
+SQL> SET RECSEPCHAR "*"
+SQL> TTITLE CENTER "Author/Title Information" SKIP CENTER "Author Book Cost Evaluation" SKIP 2
+SQL> BTITLE CENTER'Internal Use Only'
+SQL> column name format heading 'Publisher Name' skip 1 word_wrapped
+SP2-0246: Illegal FORMAT string "heading"
+SQL> column pubID format heading 'ID' skip 1 word_wrapped
+SP2-0246: Illegal FORMAT string "heading"
+SQL> column title format heading 'Book|Title'
+SP2-0246: Illegal FORMAT string "heading"
+SQL> column cost format heading 'Book|Cost'
+SP2-0246: Illegal FORMAT string "heading"
+SQL> break on name on pubID
+SQL> compute sum label "Total Cost:" of cost on name
+SQL> select name, p.pubID, title, cost
+  2  from publisher p, books b
+  3  where p.pubID=b.pubID
+  4  order by name;
+
+                          Author/Title Information                         
+                        Author Book Cost Evaluation                        
+                                                                           
+                                                                      Book 
+NAME                         PUBID TITLE                              Cost 
+----------------------- ---------- ------------------------------ -------- 
+AMERICAN PUBLISHING              3 HANDCRANKED COMPUTERS            $21.80 
+                                   DATABASE IMPLEMENTATION          $31.40 
+                                   HOLY GRAIL OF ORACLE             $47.25 
+*********************** **********                                -------- 
+Total Cost:                                                        $100.45 
+PRINTING IS US                   1 HOW TO MANAGE THE MANAGER        $15.40 
+                                   REVENGE OF MICKEY                $14.20 
+*********************** **********                                -------- 
+Total Cost:                                                         $29.60 
+PUBLISH OUR WAY                  2 BUILDING A CAR WITH TOOTHPICKS   $37.80 
+                                   E-BUSINESS THE EASY WAY          $37.90 
+*********************** **********                                -------- 
+Total Cost:                                                         $75.70 
+READING MATERIALS INC.           4 COOKING WITH MUSHROOMS           $12.50 
+                                   THE WOK WAY TO COOK              $19.00 
+                                   BODYBUILD IN 10 MINUTES A DAY    $18.75 
+                                   HOW TO GET FASTER PIZZA          $17.85 
+*********************** **********                                -------- 
+Total Cost:                                                         $68.10 
+REED-N-RITE                      5 PAINLESS CHILD-REARING           $48.00 
+                                   BIG BEAR AND LITTLE DOVE          $5.32 
+                                   SHORTEST POEMS                   $21.85 
+*********************** **********                                -------- 
+Total Cost:                                                         $75.17 
+
+
+
+                             Internal Use Only                             
+
+14 rows selected.
+
+SQL> 
+SQL> spool off
